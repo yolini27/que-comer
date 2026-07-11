@@ -2,6 +2,8 @@
 
 App web mobile-first para decidir qué comer sin sobrepensar. Compañera de la app de outfits: misma lógica de galería + filtros + "sorpréndeme".
 
+**🌐 En vivo: https://yolini27.github.io/que-comer/**
+
 Todo vive en el navegador (IndexedDB): sin backend, sin cuentas, sin login. Las fotos se comprimen a máx. 800px antes de guardarse.
 
 ## Cómo correrla
@@ -14,7 +16,7 @@ python3 -m http.server 8137
 # abrir http://localhost:8137
 ```
 
-Para usarla en el celular, súbela a cualquier hosting estático (GitHub Pages, Netlify, Cloudflare Pages — todos gratis). Los datos se guardan **por navegador/dispositivo**: usa Exportar/Importar (⚙️) para pasarlos de uno a otro.
+Ya está publicada en GitHub Pages (repo `yolini27/que-comer`, rama `main`): cada `git push` actualiza la página en uno o dos minutos. Los datos se guardan **por navegador/dispositivo**: usa Exportar/Importar (⚙️) para pasarlos de uno a otro.
 
 ## Instalarla como app
 
