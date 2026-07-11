@@ -4,7 +4,7 @@ App web mobile-first para decidir qué comer sin sobrepensar. Compañera de la a
 
 **🌐 En vivo: https://yolini27.github.io/que-comer/**
 
-Todo vive en el navegador (IndexedDB): sin backend, sin cuentas, sin login. Las fotos se comprimen a máx. 800px antes de guardarse.
+Ahora con **cuenta y nube** (Supabase, mismo proyecto que Outfit Hoy): entras con tu usuario corto (ej. `yoli` → `yoli@outfithoy.app`) y tus comidas se sincronizan entre dispositivos. **Tu misma cuenta de Outfit Hoy funciona aquí.** IndexedDB sigue siendo la copia local rápida y offline; la nube es la fuente de verdad (gana el cambio más nuevo). Las fotos se encuadran cuadradas 800×800 antes de guardarse.
 
 ## Cómo correrla
 
@@ -29,9 +29,12 @@ Queda con su propio ícono (tazón humeante 🍲) y funciona offline.
 
 | Archivo | Qué hace |
 |---|---|
-| `index.html` | Toda la UI (galería, formulario, detalle, decidir, ajustes) |
-| `app.js` | Lógica: IndexedDB, compresión de fotos, filtros, random ponderado, respaldo JSON |
-| `styles.css` | Estilos mobile-first, tema oscuro cálido |
+| `index.html` | Toda la UI (galería, formulario, detalle, decidir, login, recorte, hoja de usuario) |
+| `app.js` | Lógica: IndexedDB + cola de cambios, sync con Supabase, recorte cuadrado, filtros, random ponderado, respaldo JSON |
+| `styles.css` | Estilos mobile-first, tema blanco limpio |
+| `config.js` | URL + llave anon de Supabase (pública; el SW la sirve red-primero) |
+| `setup.sql` | Tablas `comidas` y `perfiles_comida` + RLS + bucket privado `fotos-comida` (ya ejecutado) |
+| `lib/supabase.min.js` | supabase-js vendorizado (sin CDN en runtime) |
 | `sw.js` | Service worker: network-first con fallback a caché (offline) |
 | `manifest.webmanifest` + `icons/` | PWA instalable |
 
@@ -39,5 +42,9 @@ Queda con su propio ícono (tazón humeante 🍲) y funciona offline.
 
 - **Sorpréndeme** es un random ponderado: cada opción pesa según los días sin comerla (lo nunca registrado pesa 45 días), así prioriza lo que hace más tiempo no comes.
 - **"Lo comí hoy"** guarda la fecha en `eatenDates`; el grid muestra el badge discreto ("ayer", "hace 2 sem"...). Tocarlo dos veces el mismo día no duplica.
-- **Respaldo:** el JSON exportado incluye las fotos en base64; importar reemplaza todo (previa confirmación).
-- Los distritos personalizados que agregues quedan guardados y aparecen en filtros y formularios.
+- **Respaldo:** el JSON exportado incluye las fotos (y food checks) en base64; importar reemplaza lo local y se sube a la nube.
+- Los distritos personalizados se sincronizan en la tabla `perfiles_comida` y se administran desde la hoja de usuario.
+- **Nube:** cambios locales van a una cola `pending` y se empujan al reconectar; la primera vez que inicias sesión en un dispositivo con datos locales, todo se migra solo a tu cuenta. Cerrar sesión borra la copia local.
+- **Food check:** mini-fotos del mismo plato en otros días, en la carpeta `{user_id}/{comida}-{extra}.jpg` del bucket.
+- La foto de perfil se guarda como `{user_id}/avatar.jpg` en `fotos-comida`; si no existe, se reutiliza la de Outfit Hoy (bucket `fotos`).
+- Capas de overlays: decidir 50 < resultado 52 < detalle 56 < editor 58 < hoja 70 < login 76 < recorte 80.

@@ -20,10 +20,15 @@
   <!-- ===== Pantalla principal: galería ===== -->
   <header class="appbar">
     <h1>🍽️ ¿Qué comer?</h1>
-    <button id="btn-settings" class="icon-btn" aria-label="Ajustes">⚙️</button>
+    <button id="btn-user" class="avatar avatar-mini" aria-label="Mi usuario">
+      <img id="avatar-img-mini" class="hidden" alt="">
+      <svg id="avatar-default-mini" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2.1c-4 0-7.4 2.2-7.4 5v1.3h14.8V19c0-2.7-3.4-4.9-7.4-4.9Z"/></svg>
+    </button>
   </header>
 
   <main id="screen-gallery">
+    <div id="ptr" class="ptr hidden">Actualizando…</div>
+
     <button id="btn-decide" class="decide-cta">🎲 &nbsp;¿Qué como hoy?</button>
 
     <div class="chips-row" id="filter-type-chips"></div>
@@ -90,10 +95,11 @@
     <header class="screen-head">
       <button class="icon-btn btn-close" data-close="screen-detail" aria-label="Cerrar">✕</button>
       <h2>Detalle</h2>
-      <button id="btn-fav-detail" class="icon-btn heart" aria-label="Favorito">🤍</button>
+      <button id="btn-fav-detail" class="icon-btn heart" aria-label="Favorito">♡</button>
     </header>
     <div class="screen-body" id="detail-body"></div>
   </div>
+  <input type="file" id="input-extra" accept="image/*" hidden>
 
   <!-- ===== ¿Qué como hoy? ===== -->
   <div id="screen-decide" class="screen">
@@ -126,25 +132,72 @@
     </div>
   </div>
 
-  <!-- ===== Ajustes / respaldo ===== -->
-  <div id="screen-settings" class="screen">
-    <header class="screen-head">
-      <button class="icon-btn btn-close" data-close="screen-settings" aria-label="Cerrar">✕</button>
-      <h2>Ajustes</h2>
-    </header>
-    <div class="screen-body">
-      <p id="stats-line" class="muted"></p>
-      <label class="field-label">Respaldo</label>
+  <!-- ===== Hoja de usuario ===== -->
+  <div id="sheet-user" class="sheet-backdrop hidden">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="user-title">
+      <div class="perfil-row">
+        <button id="btn-avatar" class="avatar" aria-label="Cambiar foto de perfil">
+          <img id="avatar-img" class="hidden" alt="Foto de perfil">
+          <svg id="avatar-default" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2.1c-4 0-7.4 2.2-7.4 5v1.3h14.8V19c0-2.7-3.4-4.9-7.4-4.9Z"/></svg>
+        </button>
+        <div>
+          <h2 id="user-title">Mis comidas</h2>
+          <p class="muted">¿Qué comemos hoy? 🍜</p>
+        </div>
+      </div>
+      <input type="file" id="input-avatar" accept="image/*" hidden>
+      <p id="avatar-hint" class="muted">Toca el círculo para poner tu foto 📸</p>
+      <p id="user-email" class="muted"></p>
+      <p id="user-count" class="muted"></p>
+      <p id="sync-info" class="muted"></p>
+      <div id="mis-distritos-box" class="hidden">
+        <p class="muted">Mis distritos</p>
+        <div id="mis-distritos" class="chips-row wrap"></div>
+      </div>
       <button id="btn-export" class="btn secondary big">⬇️ Exportar datos (JSON)</button>
       <button id="btn-import" class="btn secondary big">⬆️ Importar respaldo</button>
       <input type="file" id="input-import" accept="application/json,.json" hidden>
-      <p class="muted small">Exporta un archivo con todas tus comidas y fotos. Al importar, se reemplaza todo lo actual con el respaldo.</p>
-      <p class="muted small">Todo se guarda solo en este navegador. Sin cuentas, sin nube. 💜</p>
+      <button id="btn-install" class="btn secondary big hidden">📲 Instalar app</button>
+      <button id="btn-logout" class="btn danger big hidden">Cerrar sesión</button>
+      <button id="btn-sheet-close" class="btn secondary big">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- ===== Recorte cuadrado ===== -->
+  <div id="screen-recorte" class="screen">
+    <div class="screen-body recorte-body">
+      <h2>Encuadra tu foto</h2>
+      <p class="muted">Arrastra para acomodar · desliza para acercar</p>
+      <div id="recorte-marco">
+        <img id="recorte-img" alt="">
+      </div>
+      <input type="range" id="recorte-zoom" min="100" max="300" value="100" aria-label="Acercar o alejar">
+      <div class="recorte-botones">
+        <button id="btn-recorte-cancelar" class="btn secondary">Cancelar</button>
+        <button id="btn-recorte-ok" class="btn primary">Listo ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Iniciar sesión ===== -->
+  <div id="screen-login" class="screen">
+    <div class="screen-body login-body">
+      <h1>🍽️ ¿Qué comer?</h1>
+      <p class="muted">Entra con tu usuario para ver tus comidas guardadas.</p>
+      <input type="text" id="login-usuario" class="input" placeholder="Usuario o correo" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+      <input type="password" id="login-pass" class="input" placeholder="Contraseña (mínimo 6 caracteres)" autocomplete="current-password">
+      <p class="muted login-hint">Puede ser un nombre corto (ej: yoli) o tu correo. Tu misma cuenta de Outfit Hoy funciona aquí. 💜</p>
+      <p id="login-error" class="error hidden"></p>
+      <p id="login-info" class="login-info hidden"></p>
+      <button id="btn-login" class="btn primary big">Entrar</button>
+      <button id="btn-signup" class="btn secondary big">Crear cuenta nueva</button>
     </div>
   </div>
 
   <div id="toast" class="toast"></div>
 
+  <script src="lib/supabase.min.js"></script>
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

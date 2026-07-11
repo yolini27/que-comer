@@ -1,10 +1,12 @@
 /* Service worker: app shell en caché, funciona 100% offline. */
-const CACHE = 'que-comer-v2';
+const CACHE = 'que-comer-v3';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './config.js',
+  './lib/supabase.min.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',

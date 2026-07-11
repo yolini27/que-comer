@@ -202,7 +202,9 @@ main { padding: 0 14px calc(110px + var(--safe-b)); }
 textarea.input { resize: vertical; }
 
 .photo-picker {
-  width: 100%; aspect-ratio: 4 / 3;
+  width: 100%; max-width: 340px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
   border-radius: var(--radius);
   background: var(--surface);
   overflow: hidden;
@@ -235,7 +237,10 @@ textarea.input { resize: vertical; }
 
 /* ===== Detalle ===== */
 .detail-photo {
-  width: 100%; aspect-ratio: 4 / 3;
+  width: 100%; max-width: 480px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  display: block;
   border-radius: var(--radius);
   object-fit: cover;
   background: var(--surface);
@@ -306,6 +311,180 @@ textarea.input { resize: vertical; }
 .result-screen.rolling .result-photo { animation: pulse 0.35s infinite alternate; }
 @keyframes pulse { from { transform: scale(1); } to { transform: scale(0.96); } }
 
+/* ===== Perfil (avatar) ===== */
+.avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface-2);
+  border: none;
+  display: grid; place-items: center;
+  padding: 0;
+  cursor: pointer;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar svg { width: 34px; height: 34px; fill: #a5a5ae; }
+.avatar-mini { width: 42px; height: 42px; }
+.avatar-mini svg { width: 22px; height: 22px; }
+.perfil-row {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 12px;
+}
+.perfil-row h2 { font-size: 1.5rem; letter-spacing: -0.01em; margin-bottom: 2px; }
+
+/* ===== Hoja de usuario ===== */
+.sheet-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(23, 23, 26, 0.4);
+  z-index: 70;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.sheet {
+  width: 100%; max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  padding: 22px 20px calc(24px + var(--safe-b));
+}
+.sheet .muted { margin: 4px 0; font-size: 0.95rem; }
+.sheet .btn.big { margin-top: 10px; }
+#mis-distritos-box { margin: 12px 0 4px; }
+.chip-x { opacity: 0.5; margin-left: 4px; }
+
+/* ===== Actualizar jalando hacia abajo ===== */
+.ptr {
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 6px 0 10px;
+}
+
+/* ===== Food check (mini fotos) ===== */
+.extras-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--surface);
+  border-radius: 12px;
+}
+.extras-sub { font-weight: 400; text-transform: none; letter-spacing: 0; }
+.extras-row {
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  padding: 8px 0 4px;
+  scrollbar-width: none;
+}
+.extras-row::-webkit-scrollbar { display: none; }
+.extra-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 84px; height: 84px;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid transparent;
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.extra-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.extra-thumb[aria-current="true"] { border-color: var(--accent); }
+.extra-thumb.extra-vacia { font-size: 2rem; display: grid; place-items: center; }
+.extra-x {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(23, 23, 26, 0.72);
+  color: #fff;
+  font-size: 0.75rem;
+  display: grid; place-items: center;
+}
+.extra-add {
+  flex-shrink: 0;
+  width: 84px; height: 84px;
+  border-radius: 12px;
+  border: 1.5px dashed #dcdce0;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 1.6rem;
+  display: grid; place-items: center;
+  cursor: pointer;
+}
+
+/* ===== Corazones (favoritos) ===== */
+.chip-corazon { font-size: 1.15rem; padding: 8px 16px; font-weight: 400; line-height: 1; }
+.card .badge-fav {
+  font-size: 1.15rem;
+  color: #fff;
+  font-weight: 700;
+}
+.heart { font-size: 1.6rem; }
+.heart.on { color: var(--heart); }
+
+/* ===== Recorte cuadrado ===== */
+.recorte-body { text-align: center; padding-top: calc(20px + var(--safe-t)); }
+.recorte-body h2 { margin-bottom: 4px; }
+#recorte-marco {
+  position: relative;
+  width: min(86vw, 420px);
+  aspect-ratio: 1 / 1;
+  margin: 14px auto 10px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #1d1d21;
+  touch-action: none;
+  cursor: grab;
+}
+#recorte-img {
+  position: absolute;
+  top: 0; left: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+#recorte-zoom {
+  display: block;
+  width: min(86vw, 420px);
+  height: 34px;
+  margin: 0 auto 14px;
+  accent-color: var(--accent);
+}
+.recorte-botones {
+  display: flex; gap: 10px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.recorte-botones .btn { flex: 1; }
+
+/* ===== Login ===== */
+.login-body { padding-top: 14vh; text-align: center; }
+.login-body h1 { margin-bottom: 8px; font-size: 1.9rem; }
+.login-body > .muted { margin-bottom: 20px; }
+.login-body .input { margin: 6px 0; text-align: left; }
+.login-hint { font-size: 0.88rem; margin-top: 8px; }
+.error { color: #c22b4a; font-weight: 600; margin: 10px 0; }
+.login-info {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+/* Orden de capas: detalle sobre "decidir", editor sobre detalle,
+   hoja de usuario y login encima, recorte sobre todo */
+#screen-decide  { z-index: 50; }
+#screen-result  { z-index: 52; }
+#screen-detail  { z-index: 56; }
+#screen-form    { z-index: 58; }
+#screen-login   { z-index: 76; }
+#screen-recorte { z-index: 80; }
+
 /* ===== Toast ===== */
 .toast {
   position: fixed;
@@ -318,7 +497,7 @@ textarea.input { resize: vertical; }
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
   opacity: 0; pointer-events: none;
   transition: opacity 0.25s, transform 0.25s;
-  z-index: 50;
+  z-index: 100;
   max-width: 90vw; text-align: center;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
