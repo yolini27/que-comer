@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>¿Qué comer?</title>
+  <meta name="description" content="Decide qué comer sin sobrepensar">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Qué comer">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===== Pantalla principal: galería ===== -->
+  <header class="appbar">
+    <h1>🍽️ ¿Qué comer?</h1>
+    <button id="btn-settings" class="icon-btn" aria-label="Ajustes">⚙️</button>
+  </header>
+
+  <main id="screen-gallery">
+    <button id="btn-decide" class="decide-cta">🎲 &nbsp;¿Qué como hoy?</button>
+
+    <div class="chips-row" id="filter-type-chips"></div>
+    <div class="chips-row" id="filter-district-chips"></div>
+
+    <div id="grid" class="grid"></div>
+
+    <div id="empty-state" class="empty hidden">
+      <div class="empty-emoji">🥡</div>
+      <p><strong>Todavía no hay comidas</strong></p>
+      <p>Toca el botón <span class="accent">+</span> para agregar tu primer plato rico.</p>
+    </div>
+
+    <div id="empty-filter" class="empty hidden">
+      <div class="empty-emoji">🔍</div>
+      <p>Nada por aquí con esos filtros.</p>
+    </div>
+  </main>
+
+  <button id="fab" class="fab" aria-label="Agregar comida">+</button>
+
+  <!-- ===== Formulario agregar / editar ===== -->
+  <div id="screen-form" class="screen">
+    <header class="screen-head">
+      <button class="icon-btn btn-close" data-close="screen-form" aria-label="Cerrar">✕</button>
+      <h2 id="form-title">Nueva comida</h2>
+    </header>
+    <div class="screen-body">
+      <div id="photo-picker" class="photo-picker">
+        <img id="photo-preview" class="hidden" alt="Foto del plato">
+        <div id="photo-placeholder" class="photo-placeholder">
+          <span class="empty-emoji">📸</span>
+          <p>Agrega una foto</p>
+        </div>
+      </div>
+      <div class="photo-btns">
+        <button id="btn-camera" class="btn secondary">📷 Cámara</button>
+        <button id="btn-gallery" class="btn secondary">🖼️ Galería</button>
+      </div>
+      <input type="file" id="input-camera" accept="image/*" capture="environment" hidden>
+      <input type="file" id="input-gallery" accept="image/*" hidden>
+
+      <label class="field-label">Tipo</label>
+      <div class="chips-row wrap" id="form-type-chips"></div>
+
+      <label class="field-label">Distrito</label>
+      <div class="chips-row wrap" id="form-district-chips"></div>
+
+      <label class="field-label" for="f-name">Nombre del plato</label>
+      <input type="text" id="f-name" class="input" placeholder="Ej: Lomo saltado" autocomplete="off">
+
+      <label class="field-label" for="f-place">Local</label>
+      <input type="text" id="f-place" class="input" placeholder="Ej: La Nacional" autocomplete="off">
+
+      <label class="field-label" for="f-notes">¿Cómo lo pides? (notas)</label>
+      <textarea id="f-notes" class="input" rows="3" placeholder="Ej: sin cebolla, ají aparte, pedir la mesa de la ventana"></textarea>
+
+      <button id="btn-save" class="btn primary big">Guardar 💾</button>
+    </div>
+  </div>
+
+  <!-- ===== Detalle de comida ===== -->
+  <div id="screen-detail" class="screen">
+    <header class="screen-head">
+      <button class="icon-btn btn-close" data-close="screen-detail" aria-label="Cerrar">✕</button>
+      <h2>Detalle</h2>
+      <button id="btn-fav-detail" class="icon-btn heart" aria-label="Favorito">🤍</button>
+    </header>
+    <div class="screen-body" id="detail-body"></div>
+  </div>
+
+  <!-- ===== ¿Qué como hoy? ===== -->
+  <div id="screen-decide" class="screen">
+    <header class="screen-head">
+      <button class="icon-btn btn-close" data-close="screen-decide" aria-label="Cerrar">✕</button>
+      <h2>¿Qué como hoy?</h2>
+    </header>
+    <div class="screen-body">
+      <label class="field-label">¿Qué toca?</label>
+      <div id="decide-type-btns" class="decide-types"></div>
+      <label class="field-label">¿Dónde estás?</label>
+      <div class="chips-row wrap" id="decide-district-chips"></div>
+      <div id="decide-count" class="decide-count"></div>
+      <div id="decide-grid" class="grid"></div>
+    </div>
+    <div class="screen-foot">
+      <button id="btn-surprise" class="btn primary big">🎲 ¡Sorpréndeme!</button>
+    </div>
+  </div>
+
+  <!-- ===== Resultado sorpresa ===== -->
+  <div id="screen-result" class="screen result-screen">
+    <div class="screen-body result-body" id="result-body"></div>
+    <div class="screen-foot result-foot">
+      <button id="btn-result-eat" class="btn primary big">✓ ¡Lo comí hoy!</button>
+      <div class="row-2">
+        <button id="btn-result-again" class="btn secondary">🔁 Otra opción</button>
+        <button id="btn-result-close" class="btn secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Ajustes / respaldo ===== -->
+  <div id="screen-settings" class="screen">
+    <header class="screen-head">
+      <button class="icon-btn btn-close" data-close="screen-settings" aria-label="Cerrar">✕</button>
+      <h2>Ajustes</h2>
+    </header>
+    <div class="screen-body">
+      <p id="stats-line" class="muted"></p>
+      <label class="field-label">Respaldo</label>
+      <button id="btn-export" class="btn secondary big">⬇️ Exportar datos (JSON)</button>
+      <button id="btn-import" class="btn secondary big">⬆️ Importar respaldo</button>
+      <input type="file" id="input-import" accept="application/json,.json" hidden>
+      <p class="muted small">Exporta un archivo con todas tus comidas y fotos. Al importar, se reemplaza todo lo actual con el respaldo.</p>
+      <p class="muted small">Todo se guarda solo en este navegador. Sin cuentas, sin nube. 💜</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
